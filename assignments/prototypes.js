@@ -73,10 +73,42 @@ Humanoid.prototype.greet = function () {
   * Instances of CharacterStats should have all of the same properties as GameObject.
 */
 
+/*
+  Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.
+  Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+*/
+
+const Villain = function(info){
+  Humanoid.call(this, info);
+}
+
+Villain.prototype = Object.create(Humanoid.prototype)
+
+Villain.prototype.slash = function(hero) {
+  hero.healthPoints = hero.healthPoints - 3;
+  return `${this.name} did three damage to ${hero.name}`;
+}
+
+const Hero = function(info) {
+  Humanoid.call(this, info);
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+Hero.prototype.purify = function(target) {
+  if (target.team === 'Bad Guys') {
+    target.healthPoints = target.healthPoints - 5;
+    return `${this.name} did five damage to ${target.name}`;
+  } else {
+    target.healthPoints = target.healthPoints + 10;
+    return `${this.name} healed 10 health for ${target.name}`;
+  }
+}
+
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
 
-  const mage = new Humanoid({
+  const mage = new Hero({
     createdAt: new Date(),
     dimensions: {
       length: 2,
@@ -126,9 +158,29 @@ Humanoid.prototype.greet = function () {
     language: 'Elvish',
   });
 
+  const badGuy = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 3,
+      height: 4,
+    },
+    healthPoints: 25,
+    name: 'Voldemort',
+    team: 'Bad Guys',
+    weapons: [
+      'Sword',
+      'Dagger',
+    ],
+    language: 'Common Tongue',
+  })
+
   console.log(mage.createdAt); // Today's date
   console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
+  console.log(badGuy.slash(swordsman));
+  console.log(mage.purify(swordsman));
   console.log(swordsman.healthPoints); // 15
+  console.log(mage.purify(badGuy));
   console.log(mage.name); // Bruce
   console.log(swordsman.team); // The Round Table
   console.log(mage.weapons); // Staff of Shamalama
